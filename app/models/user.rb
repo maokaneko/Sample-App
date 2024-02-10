@@ -122,3 +122,4 @@ class User < ApplicationRecord
       self.activation_digest = User.digest(activation_token) # 有効化トークンをダイジェスト化
     end
 end
+
