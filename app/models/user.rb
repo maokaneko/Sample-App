@@ -1,9 +1,9 @@
 class User < ApplicationRecord
-  has_many :microposts, dependent: :destroy
-  has_many :active_relationships,  class_name:  "Relationship",
-                                   foreign_key: "follower_id",
-                                   dependent:   :destroy
-  has_many :passive_relationships, class_name:  "Relationship",
+  has_many :microposts, dependent: :destroy # ユーザーが削除されたら、そのユーザーのマイクロポストも削除される
+  has_many :active_relationships, class_name:  "Relationship", # ここでのclass_nameは、Relationshipクラスを参照するという意味
+                                  foreign_key: "follower_id",
+                                  dependent:   :destroy
+  has_many :passive_relationships, class_name:  "Relationship", # ここでのclass_nameは、Relationshipクラスを参照するという意味
                                    foreign_key: "followed_id",
                                    dependent:   :destroy
   has_many :following, through: :active_relationships,  source: :followed
@@ -31,7 +31,7 @@ class User < ApplicationRecord
     SecureRandom.urlsafe_base64
   end
 
-  # 永続化セッションのためにユーザーをデータベースに記憶する
+  # 永続的セッションのためにユーザーをデータベースに記憶する
   def remember
     self.remember_token = User.new_token
     update_attribute(:remember_digest, User.digest(remember_token))
@@ -46,7 +46,7 @@ class User < ApplicationRecord
 
   # 渡されたトークンがダイジェストと一致したらtrueを返す
   def authenticated?(attribute, token)
-    digest = send("#{attribute}_digest")
+    digest = send("#{attribute}_digest") # 例：remember_digest
     return false if digest.nil?
     BCrypt::Password.new(digest).is_password?(token)
   end
@@ -68,20 +68,20 @@ class User < ApplicationRecord
   end
 
   # パスワード再設定の属性を設定する
-  def create_reset_digest
+  def create_reset_digest # パスワード再設定のためのダイジェストを作成
     self.reset_token = User.new_token
     update_attribute(:reset_digest,  User.digest(reset_token))
     update_attribute(:reset_sent_at, Time.zone.now)
   end
 
   # パスワード再設定のメールを送信する
-  def send_password_reset_email
+  def send_password_reset_email # パスワード再設定のためのメールを送信
     UserMailer.password_reset(self).deliver_now
   end
 
   # パスワード再設定の期限が切れている場合はtrueを返す
   def password_reset_expired?
-    reset_sent_at < 2.hours.ago
+    reset_sent_at < 2.hours.ago # パスワード再設定メールの送信時刻が2時間前よりも前かどうか
   end
 
   # ユーザーのステータスフィードを返す
@@ -118,7 +118,7 @@ class User < ApplicationRecord
 
     # 有効化トークンとダイジェストを作成および代入する
     def create_activation_digest
-      self.activation_token  = User.new_token
-      self.activation_digest = User.digest(activation_token)
+      self.activation_token  = User.new_token # 有効化トークンを作成
+      self.activation_digest = User.digest(activation_token) # 有効化トークンをダイジェスト化
     end
 end
