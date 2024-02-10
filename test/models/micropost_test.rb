@@ -4,6 +4,7 @@ class MicropostTest < ActiveSupport::TestCase
 
   def setup
     @user = users(:michael)
+    # このコードは慣習的に正しくない
     @micropost = @user.microposts.build(content: "Lorem ipsum")
   end
 
@@ -27,6 +28,8 @@ class MicropostTest < ActiveSupport::TestCase
   end
 
   test "order should be most recent first" do
-    assert_equal microposts(:most_recent), Micropost.first
+    assert_equal microposts(:most_recent), Micropost.first  #最も新しいマイクロポストを最初に表示するようにするテスト
   end
+
+
 end

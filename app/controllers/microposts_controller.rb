@@ -2,11 +2,12 @@ class MicropostsController < ApplicationController
   before_action :logged_in_user, only: [:create, :destroy]
   before_action :correct_user,   only: :destroy
 
+
   def create
     @micropost = current_user.microposts.build(micropost_params)
-    @micropost.image.attach(params[:micropost][:image])
+    @micropost.image.attach(params[:micropost][:image]) # 画像をアップロードするためのメソッド
     if @micropost.save
-      flash[:success] = "Micropost created!"
+      flash[:success] = "投稿しました！"
       redirect_to root_url
     else
       @feed_items = current_user.feed.paginate(page: params[:page])
@@ -16,8 +17,8 @@ class MicropostsController < ApplicationController
 
   def destroy
     @micropost.destroy
-    flash[:success] = "Micropost deleted"
-    if request.referrer.nil? || request.referrer == microposts_url
+    flash[:success] = "投稿を削除しました。"
+    if request.referrer.nil?
       redirect_to root_url, status: :see_other
     else
       redirect_to request.referrer, status: :see_other

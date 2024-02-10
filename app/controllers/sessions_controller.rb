@@ -13,16 +13,17 @@ class SessionsController < ApplicationController
         log_in user
         redirect_to forwarding_url || user
       else
-        message  = "Account not activated. "
-        message += "Check your email for the activation link."
+        message  = "アカウントが有効化されていません。 "
+        message += "メールアドレスを確認して、アカウントを有効化してください。"
         flash[:warning] = message
         redirect_to root_url
       end
     else
-      flash.now[:danger] = 'Invalid email/password combination'
+      flash.now[:danger] = '無効なメールアドレス/パスワードの組み合わせです'
       render 'new', status: :unprocessable_entity
     end
   end
+
 
   def destroy
     log_out if logged_in?
