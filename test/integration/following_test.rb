@@ -32,7 +32,6 @@ class FollowPagesTest < Following
   end
 end
 
-
 class FollowTest < Following
 
   test "should follow a user the standard way" do
